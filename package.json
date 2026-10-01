@@ -1,6 +1,6 @@
 {
   "name": "@pcl/design-system",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Shared design system for the Psychedelics & Contemplation Lab websites",
   "main": "index.js",
   "scripts": {

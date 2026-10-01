@@ -40,7 +40,7 @@
 /* --- Watermark motifs -------------------------------------------------------------- */
 /* A large, faint line drawing behind a section. Place inside a position:relative
    container with overflow:hidden (Section does this when it has class .has-watermark). */
-.has-watermark { position: relative; overflow: hidden; isolation: isolate; }
+.has-watermark { position: relative; overflow: clip; isolation: isolate; } /* clip, not hidden: hidden makes a scroll container that keyboard focus can scroll sideways */
 .watermark {
   position: absolute; z-index: -1; pointer-events: none;
   color: var(--accent);
