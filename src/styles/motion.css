@@ -150,13 +150,15 @@ a.media-card.no-icon::after { content: "" !important; }
   html.js .reveal--blur { transform: translateY(10px); filter: blur(10px); transition: opacity var(--reveal-dur, 900ms) var(--ease), transform var(--reveal-dur, 900ms) var(--ease), filter var(--reveal-dur, 900ms) var(--ease); }
   html.js .reveal--blur.is-visible { filter: blur(0); }
   /* wipe: the block is uncovered from the bottom (headings, rules) */
-  html.js .reveal--wipe { transform: none; opacity: 1; clip-path: inset(100% 0 0 0); transition: clip-path var(--reveal-dur, 900ms) var(--ease); }
-  html.js .reveal--wipe.is-visible { clip-path: inset(0 0 0 0); }
+  /* wipes use a CSS mask (not clip-path): Chromium applies clip-path when computing
+     IntersectionObserver rectangles, so a fully clipped element would never intersect */
+  html.js .reveal--wipe { transform: none; opacity: 1; -webkit-mask-image: linear-gradient(#000 0 0); mask-image: linear-gradient(#000 0 0); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: bottom; mask-position: bottom; -webkit-mask-size: 100% 0%; mask-size: 100% 0%; transition: -webkit-mask-size var(--reveal-dur, 900ms) var(--ease), mask-size var(--reveal-dur, 900ms) var(--ease); }
+  html.js .reveal--wipe.is-visible { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
   /* images: unmasked from the bottom while easing from a slight zoom */
-  html.js .reveal--mask { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path var(--reveal-dur, 1100ms) var(--ease); }
-  html.js .reveal--mask img { transform: scale(1.08); transition: transform calc(var(--reveal-dur, 1100ms) + 400ms) var(--ease); }
-  html.js .reveal--mask.is-visible { clip-path: inset(0 0 0 0); }
-  html.js .reveal--mask.is-visible img { transform: scale(1); }
+  html.js .reveal--mask { opacity: 1; transform: none; -webkit-mask-image: linear-gradient(#000 0 0); mask-image: linear-gradient(#000 0 0); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: top; mask-position: top; -webkit-mask-size: 100% 0%; mask-size: 100% 0%; transition: -webkit-mask-size var(--reveal-dur, 1100ms) var(--ease), mask-size var(--reveal-dur, 1100ms) var(--ease); }
+  html.js .reveal--mask img { scale: 1.08; transition: scale calc(var(--reveal-dur, 1100ms) + 400ms) var(--ease); }
+  html.js .reveal--mask.is-visible { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  html.js .reveal--mask.is-visible img { scale: 1; }
   /* a rule or underline that draws from the left */
   html.js .reveal--line { opacity: 1; transform: scaleX(0); transform-origin: left; transition: transform var(--reveal-dur, 900ms) var(--ease); }
   html.js .reveal--line.is-visible { transform: scaleX(1); }

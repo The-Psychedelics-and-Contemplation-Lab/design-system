@@ -7,7 +7,7 @@ const { href, title, eyebrow, text, src, alt = '', mark, markAlt = '', ratio, ex
 ---
 <a class={`media-card no-icon ${ratio ? `media-card--${ratio}` : ''} ${src ? '' : 'media-card--accent'} ${cls}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>
   {src && <img src={src} alt={alt} loading="lazy" decoding="async" />}
-  {mark && <span class="media-card__mark" aria-hidden={markAlt ? undefined : 'true'}><img src={mark} alt={markAlt} loading="lazy" decoding="async" /></span>}
+  {mark && <span class="media-card__mark" aria-hidden={markAlt ? undefined : 'true'}><img src={mark} alt={markAlt || title} loading="lazy" decoding="async" /></span>}
   <span class="media-card__body">
     {eyebrow && <span class="media-card__eyebrow">{eyebrow}{external && ' ↗'}</span>}
     <span class="media-card__title">{title}</span>
