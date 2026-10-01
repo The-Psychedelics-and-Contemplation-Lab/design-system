@@ -85,7 +85,9 @@
 
 /* --- Media card: image with a quiet dark gradient and the title on top -------------- */
 .media-card {
-  position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+  /* clip-path instead of overflow:hidden so the card can still grow with long text in a grid */
+  clip-path: inset(0 round var(--radius-card));
   border-radius: var(--radius-card);
   aspect-ratio: 4 / 3; background: var(--paper-deep);
   color: #fff; text-decoration: none;
