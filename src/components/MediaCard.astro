@@ -1,10 +1,13 @@
 ---
-/** <MediaCard href title eyebrow text src alt ratio="tall|wide" external /> — image card with a dark gradient and title. */
-export interface Props { href: string; title: string; eyebrow?: string; text?: string; src?: string; alt?: string; ratio?: 'tall' | 'wide'; external?: boolean; class?: string }
-const { href, title, eyebrow, text, src, alt = '', ratio, external, class: cls = '' } = Astro.props;
+/** <MediaCard href title eyebrow text src alt mark markAlt ratio="tall|wide" external class="media-card--hover" />
+ *  Image card with a dark gradient and title. `mark` = a logo shown centred instead of a photo.
+ *  Add class "media-card--hover" to show the text only on hover/focus (always visible on touch). */
+export interface Props { href: string; title: string; eyebrow?: string; text?: string; src?: string; alt?: string; mark?: string; markAlt?: string; ratio?: 'tall' | 'wide'; external?: boolean; class?: string; style?: string }
+const { href, title, eyebrow, text, src, alt = '', mark, markAlt = '', ratio, external, class: cls = '', style } = Astro.props;
 ---
-<a class={`media-card no-icon ${ratio ? `media-card--${ratio}` : ''} ${src ? '' : 'media-card--accent'} ${cls}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+<a class={`media-card no-icon ${ratio ? `media-card--${ratio}` : ''} ${src ? '' : 'media-card--accent'} ${cls}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>
   {src && <img src={src} alt={alt} loading="lazy" decoding="async" />}
+  {mark && <span class="media-card__mark" aria-hidden={markAlt ? undefined : 'true'}><img src={mark} alt={markAlt} loading="lazy" decoding="async" /></span>}
   <span class="media-card__body">
     {eyebrow && <span class="media-card__eyebrow">{eyebrow}{external && ' ↗'}</span>}
     <span class="media-card__title">{title}</span>

@@ -60,3 +60,16 @@ Pin a site to a tag (`#v1.2.0`) instead of `#main` if you ever need to freeze it
 - Outbound links get `target="_blank" rel="noopener noreferrer"` + ↗, PDFs get ⤓ — automatically, via CSS.
 - No background video. A `<canvas>` hero is allowed only behind `prefers-reduced-motion`.
 - No participant-recruitment or health-data forms, ever. Link to REDCap / institutional tools.
+
+## Motion cheat-sheet (v0.3)
+
+| Want | Use |
+|---|---|
+| Fade/rise in on scroll | `class="reveal"` (+ `reveal--fade`, `--scale`, `--left`, `--rise-lg`, `--blur`, `--wipe`, `--line`), `style="--reveal-delay:120ms; --reveal-dur:900ms"` |
+| Image uncovered from the bottom | `class="reveal reveal--mask"` on the figure frame |
+| Heading words rising one by one | `class="reveal-words"` on the heading |
+| Stagger a grid/list | `class="reveal-group"` (+ `reveal-group--slow`) on the parent |
+| Parallax | `data-parallax="0.2"` (positive = slower than the page), `data-parallax-max="600"` (px clamp), `data-parallax-origin="top"` for hero layers that start in view |
+| Image card whose text appears on hover | `<MediaCard … class="media-card--hover">`; `.media-card__mark` for a centred logo instead of a photo |
+| Sticky figure beside scrolling text | `.scrolly > .scrolly__sticky + .scrolly__steps` |
+| Centred reading column | `.container--reading`, `.text-center` |
