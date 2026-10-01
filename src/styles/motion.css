@@ -71,7 +71,7 @@
 .figure figcaption { font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); margin-top: var(--s-3); max-width: var(--measure); }
 /* Inner parallax: the image is 12 % taller than its frame and drifts inside it */
 @media (prefers-reduced-motion: no-preference) and (min-width: 60em) {
-  html.js .figure--drift .figure__frame img { height: 112%; margin-top: -6%; }
+  html.js .figure--drift .figure__frame img { height: 128%; margin-top: -14%; }
 }
 /* Fade the image into the paper at the bottom (hero illustrations) */
 .img-fade { position: relative; }
@@ -106,6 +106,8 @@
 .media-card--accent { background: var(--accent); }
 .media-card--accent::after { background: linear-gradient(to top, rgba(0,0,0,0.35), transparent 70%); }
 .media-card .media-card__title::after { content: none; }
+/* base.css cancels ::after on .no-icon links; the card's gradient must win */
+a.media-card.no-icon::after { content: "" !important; }
 @media (prefers-reduced-motion: no-preference) {
   .media-card img { transition: transform 900ms var(--ease); }
   .media-card:hover img, .media-card:focus-visible img { transform: scale(1.04); }
