@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Print stylesheet — shared by the four sites.
+   Removes navigation, footer and sidebars; repeats table headers on every
+   page; keeps rows whole; prints the URL of outbound links.
+   ========================================================================== */
+@media print {
+  @page { margin: 18mm 16mm; }
+
+  html, body { background: #fff !important; color: #000 !important; font-size: 11pt; line-height: 1.45; }
+
+  .site-header, .site-footer, .site-nav, .sidebar, .toc, .skip-link, .no-print,
+  .btn, nav, canvas, video, iframe, .lang-switch { display: none !important; }
+
+  main, .container, .container--wide, .container--narrow { width: auto !important; max-width: none !important; margin: 0 !important; }
+  .section { padding-block: 0.5cm !important; }
+  .with-sidebar { display: block !important; }
+
+  h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; color: #000; }
+  h1 { font-size: 22pt; } h2 { font-size: 16pt; margin-top: 1cm; } h3 { font-size: 13pt; } h4 { font-size: 11.5pt; }
+  p, li, blockquote { orphans: 3; widows: 3; }
+  figure, .card, img, table { break-inside: avoid; page-break-inside: avoid; }
+
+  a { color: #000; text-decoration: underline; }
+  a[href^="http"]:not([href*="localhost"])::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; }
+  a[href^="#"]::after, a[href^="mailto:"]::after, a[href^="tel:"]::after { content: ""; }
+  a[target="_blank"]::after { content: " (" attr(href) ")"; }
+  a[href$=".pdf" i]::after { content: " (" attr(href) ")"; }
+
+  .table-wrap { overflow: visible !important; border: 0 !important; }
+  table { border-collapse: collapse; font-size: 9.5pt; }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  thead th { position: static !important; background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  th, td { border: 1px solid #999; padding: 4pt 6pt; }
+
+  .chip, .section-mark { -webkit-print-color-adjust: exact; print-color-adjust: exact; border: 1px solid #999; }
+  details { border: 0; padding: 0; }
+  details > summary { list-style: none; }
+  details:not([open]) > *:not(summary) { display: block !important; }
+}

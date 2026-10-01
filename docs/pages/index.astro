@@ -1,0 +1,125 @@
+---
+import Layout from '../../src/components/Layout.astro';
+import PageHeader from '../../src/components/PageHeader.astro';
+import Section from '../../src/components/Section.astro';
+import Button from '../../src/components/Button.astro';
+import Card from '../../src/components/Card.astro';
+import LangSwitch from '../../src/components/LangSwitch.astro';
+import { ACCENTS, RESPCT_SECTIONS } from '../../src/index';
+
+const site = {
+  name: 'Design System',
+  tagline: 'Psychedelics & Contemplation Lab',
+  url: 'https://the-psychedelics-and-contemplation-lab.github.io/design-system',
+  accent: ACCENTS['lab-website'],
+  lang: 'en',
+  affiliation: 'The Psychedelics & Contemplation Lab is based in the Department of Psychiatry, McGill University, and the Lady Davis Institute for Medical Research, Jewish General Hospital, Montréal.',
+  footerLinks: [
+    { label: 'GitHub', href: 'https://github.com/The-Psychedelics-and-Contemplation-Lab/design-system', external: true },
+  ],
+};
+const page = {
+  title: 'Design system — Psychedelics & Contemplation Lab websites',
+  description: 'Living style guide for the four lab websites: shared neutrals, typography, spacing and components, with one accent colour per site.',
+  path: '/',
+};
+const nav = [
+  { label: 'Tokens', href: '#tokens' },
+  { label: 'Typography', href: '#type' },
+  { label: 'Components', href: '#components' },
+  { label: 'Tables', href: '#tables' },
+];
+const neutrals = [
+  ['--ink', '#2B2A27', 'Ink — text'], ['--ink-muted', '#6B675F', 'Secondary text'],
+  ['--rule', '#D9D6CE', 'Rules & borders'], ['--paper', '#FBFAF8', 'Page'], ['--card', '#FFFFFF', 'Card'],
+];
+---
+<Layout site={site} page={page} nav={nav}>
+  <LangSwitch slot="nav-extra" current="en" links={[{ lang: 'en', label: 'EN', href: '#' }, { lang: 'fr', label: 'FR', href: '#' }]} />
+  <main id="main">
+    <PageHeader eyebrow="Design system · v0.1.0" title="One system, four sites, one accent each"
+      lead="Neutrals, type and components are identical everywhere. Only the accent changes. Every colour here has been measured, not estimated." />
+
+    <Section id="tokens">
+      <h2>Colour</h2>
+      <p class="muted sans">Contrast ratios are computed against the page background (#FBFAF8).</p>
+      <div class="grid grid--3" style="margin-top: var(--s-6)">
+        {neutrals.map(([v, hex, label]) => (
+          <div class="card swatch"><span class="swatch__chip" style={`background:${hex}`}></span><strong class="sans">{label}</strong><code>{hex}</code><code class="muted">{v}</code></div>
+        ))}
+      </div>
+      <h3 style="margin-top: var(--s-12)">Accent per site</h3>
+      <div class="grid grid--2" style="margin-top: var(--s-6)">
+        {Object.entries(ACCENTS).map(([k, hex]) => (
+          <div class="card swatch" style={`--accent:${hex}`}>
+            <span class="swatch__chip" style={`background:${hex}`}></span>
+            <strong class="sans">{k}</strong><code>{hex}</code>
+            <div class="cluster"><a class="btn btn--primary" href="#">Primary</a><a class="btn btn--secondary" href="#">Secondary</a><span class="chip">Chip</span><a href="#">Inline link</a></div>
+          </div>
+        ))}
+      </div>
+      <h3 style="margin-top: var(--s-12)">ReSPCT section colours</h3>
+      <p class="muted sans">Fill = badges and bands; Text = the darkened variant that passes 4.5:1 as text on paper.</p>
+      <div class="grid grid--2" style="margin-top: var(--s-6)">
+        {Object.values(RESPCT_SECTIONS).map((s) => (
+          <div class="card swatch"><span class="swatch__chip" style={`background:${s.fill}`}></span><strong class="sans">{s.label}</strong><code>fill {s.fill}</code><code style={`color:${s.text}`}>text {s.text}</code></div>
+        ))}
+      </div>
+    </Section>
+
+    <Section id="type" band>
+      <h2>Typography</h2>
+      <div class="prose" style="margin-top: var(--s-6)">
+        <p class="eyebrow">Eyebrow · 13 px Inter 600</p>
+        <h1>Display — clamp(32, 4vw, 46) px Source Serif 4</h1>
+        <h2>Heading 2 — 30 px</h2>
+        <h3>Heading 3 — 24 px</h3>
+        <h4>Heading 4 — 19 px</h4>
+        <p class="lead">Lead paragraph, 24 px, used once under a page title to set the scene.</p>
+        <p>Body text is 19 px Source Serif 4 with a 1.65 line height and a 70-character measure, which is what makes long clinical documents readable on screen. Links look like <a href="#">this</a>; outbound links get an arrow <a href="https://www.nature.com/articles/s41591-025-03685-9" target="_blank" rel="noopener noreferrer">Nature Medicine</a> and PDFs a download mark <a href="/example.pdf">Explanatory document</a>. Text is always left-aligned, never justified.</p>
+        <blockquote>“Ketamine is broadly conceptualized as a brief intervention that can produce windows of opportunity for enhanced psychiatric care.”</blockquote>
+        <p class="sans">Interface text is 15 px Inter — navigation, buttons, tables, captions.</p>
+      </div>
+    </Section>
+
+    <Section id="components">
+      <h2>Components</h2>
+      <div class="cluster" style="margin-top: var(--s-6)">
+        <Button href="#">Primary button</Button>
+        <Button href="#" variant="secondary">Secondary</Button>
+        <Button href="#" variant="quiet">Quiet</Button>
+        <Button href="/example.pdf" variant="secondary">Download PDF</Button>
+        <Button href="https://example.org" variant="secondary" external>External</Button>
+        <Button href="#" size="small">Small</Button>
+      </div>
+      <div class="grid grid--3" style="margin-top: var(--s-8)">
+        <Card eyebrow="Research" title="A card with a link" href="#">Cards use the white surface, a 1 px rule and a 10 px radius. The whole card is clickable when it has a link.</Card>
+        <Card eyebrow="Guideline" title="A plain card">Static content card. Spacing between children is 12 px.</Card>
+        <Card title="Chips &amp; details"><p><span class="chip">Open access</span> <span class="chip">2025</span></p><details><summary>Expandable section</summary><p>Disclosure uses the native element — no JavaScript, keyboard accessible.</p></details></Card>
+      </div>
+    </Section>
+
+    <Section id="tables" wide>
+      <h2>Tables</h2>
+      <p class="muted sans">Sticky header on scroll; header repeated on every printed page; rows never split across pages.</p>
+      <div class="table-wrap" style="margin-top: var(--s-6)">
+        <table>
+          <caption>Example reporting items</caption>
+          <thead><tr><th scope="col">#</th><th scope="col">Item</th><th scope="col">Section</th><th scope="col" class="num">Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><a href="#item1">Physical setting of the dosing room</a></td><td><span class="chip" style={`--accent:${RESPCT_SECTIONS.physical.text}`}>Physical Environment</span></td><td class="num">96 %</td></tr>
+            <tr><td>2</td><td><a href="#item2">Music and sound</a></td><td><span class="chip" style={`--accent:${RESPCT_SECTIONS.dosing.text}`}>Dosing Session Procedure</span></td><td class="num">93 %</td></tr>
+            <tr><td>3</td><td><a href="#item3">Therapeutic framework</a></td><td><span class="chip" style={`--accent:${RESPCT_SECTIONS.framework.text}`}>Therapeutic Framework</span></td><td class="num">91 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </Section>
+  </main>
+</Layout>
+
+<style>
+  .swatch { display: grid; gap: var(--s-2); }
+  .swatch > * { margin: 0; }
+  .swatch__chip { display: block; height: 56px; border-radius: 6px; border: 1px solid var(--rule); }
+  .swatch code { font-size: 0.85rem; }
+</style>

@@ -1,0 +1,36 @@
+{
+  "name": "@pcl/design-system",
+  "version": "0.1.0",
+  "description": "Shared design system for the Psychedelics & Contemplation Lab websites",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/styles/tokens.css",
+    "./fonts.css": "./src/styles/fonts.css",
+    "./base.css": "./src/styles/base.css",
+    "./print.css": "./src/styles/print.css",
+    "./components/*": "./src/components/*",
+    "./logos/*": "./src/assets/logos/*",
+    "./fonts/*": "./src/assets/fonts/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "astro": "^7.3.5"
+  }
+}

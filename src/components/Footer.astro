@@ -1,0 +1,65 @@
+---
+/**
+ * <Footer> — affiliation line + institutional logos + site links.
+ * Text is passed in so each site (and each language) controls its wording.
+ */
+export interface FooterLink { label: string; href: string; external?: boolean }
+export interface Props {
+  siteName: string;
+  affiliation: string;      // e.g. "A project of the Psychedelics & Contemplation Lab, McGill University and the Lady Davis Institute, Jewish General Hospital, Montréal."
+  mcgillLogo: string;
+  partnerLogo?: string;
+  partnerAlt?: string;
+  links?: FooterLink[];     // Contact, Privacy, Accessibility, …
+  lang?: string;
+  year?: number;
+}
+const {
+  siteName, affiliation, mcgillLogo, partnerLogo,
+  partnerAlt = 'Lady Davis Institute for Medical Research — Jewish General Hospital',
+  links = [], lang = 'en', year = new Date().getFullYear(),
+} = Astro.props;
+const fr = lang.startsWith('fr');
+---
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__logos" aria-label={fr ? 'Affiliations institutionnelles' : 'Institutional affiliations'}>
+      <a class="no-icon" href="https://www.mcgill.ca/" target="_blank" rel="noopener noreferrer" aria-label="McGill University (opens in a new tab)">
+        <img src={mcgillLogo} alt="McGill University" width="176" height="42" loading="lazy" decoding="async" />
+      </a>
+      {partnerLogo && (
+        <a class="no-icon" href="https://www.ladydavis.ca/" target="_blank" rel="noopener noreferrer" aria-label={`${partnerAlt} (opens in a new tab)`}>
+          <img src={partnerLogo} alt={partnerAlt} width="146" height="82" loading="lazy" decoding="async" />
+        </a>
+      )}
+      <slot name="logos" />
+    </div>
+    <p class="site-footer__affiliation">{affiliation}</p>
+    <div class="site-footer__meta">
+      <p class="site-footer__copy">© {year} {siteName}</p>
+      {links.length > 0 && (
+        <ul class="site-footer__links">
+          {links.map((l) => (
+            <li><a href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener noreferrer' : undefined}>{l.label}</a></li>
+          ))}
+        </ul>
+      )}
+      <slot name="meta" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { margin-top: var(--s-24); border-top: 1px solid var(--rule); background: var(--card); }
+  .site-footer__inner { padding-block: var(--s-12); display: grid; gap: var(--s-6); }
+  .site-footer__logos { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-8); }
+  .site-footer__logos img { height: 44px; width: auto; }
+  .site-footer__logos a:nth-child(2) img { height: 64px; }
+  .site-footer__logos a { display: block; }
+  .site-footer__logos a + a { position: relative; }
+  .site-footer__affiliation { max-width: var(--measure); font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.55; color: var(--ink-muted); }
+  .site-footer__meta { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6); align-items: center; padding-top: var(--s-6); border-top: 1px solid var(--rule); font-family: var(--font-sans); font-size: var(--fs-small); color: var(--ink-muted); }
+  .site-footer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-4); }
+  .site-footer__links a { color: var(--ink-muted); }
+  .site-footer__links a:hover { color: var(--accent); }
+</style>

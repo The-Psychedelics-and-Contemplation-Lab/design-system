@@ -1,0 +1,14 @@
+---
+/** <Button href variant="primary|secondary|quiet" size="small"> — outbound ↗ / PDF ⤓ icons are automatic. */
+export interface Props { href?: string; variant?: 'primary' | 'secondary' | 'quiet'; size?: 'small'; external?: boolean; download?: boolean; type?: 'button' | 'submit'; class?: string; ariaLabel?: string }
+const { href, variant = 'primary', size, external, download, type = 'button', class: cls = '', ariaLabel } = Astro.props;
+const isPdf = href?.toLowerCase().endsWith('.pdf');
+const classes = ['btn', `btn--${variant}`, size ? `btn--${size}` : '', cls].filter(Boolean).join(' ');
+---
+{href ? (
+  <a class={classes} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} download={download ? '' : undefined} aria-label={ariaLabel}>
+    <slot />{(external || isPdf || download) && <span class="btn__icon" aria-hidden="true"></span>}
+  </a>
+) : (
+  <button class={classes} type={type} aria-label={ariaLabel}><slot /></button>
+)}

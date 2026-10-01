@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Psychedelics & Contemplation Lab — shared design tokens
+   One source of truth for the four lab websites. Sites only override
+   --accent (and its derived --accent-ink / --accent-soft) — nothing else.
+   ========================================================================== */
+
+:root {
+  /* --- Neutrals (identical on every site) ------------------------------- */
+  --ink: #2B2A27;        /* body text, headings            14.4:1 on white */
+  --ink-muted: #6B675F;  /* secondary text                  5.6:1 on white */
+  --rule: #D9D6CE;       /* hairlines, borders                              */
+  --paper: #FBFAF8;      /* page background                                 */
+  --card: #FFFFFF;       /* card / panel background                         */
+  --paper-deep: #F3F1EC; /* subtle bands (table stripes, code, quotes)      */
+
+  /* --- Accent (overridden per site) -------------------------------------
+     lab-website #4B6A8A · respct #3F6F6B · stamps #B5502F · montreal-model #6E4560
+     All four measured ≥ 4.5:1 for white text on the accent and for accent
+     text on paper. --accent-soft is a 10 % tint used for chips and hovers. */
+  --accent: #4B6A8A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, var(--paper));
+  --accent-hover: color-mix(in srgb, var(--accent) 88%, #000);
+
+  /* --- Typography --------------------------------------------------------- */
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Scale: base 19 px, ratio 1.25 — do not invent other sizes */
+  --fs-display: clamp(2rem, 4vw, 2.875rem); /* 32–46 px  H1 */
+  --fs-h2: 1.875rem;                         /* 30 px */
+  --fs-h3: 1.5rem;                           /* 24 px */
+  --fs-h4: 1.1875rem;                        /* 19 px */
+  --fs-body: 1.1875rem;                      /* 19 px */
+  --fs-ui: 0.9375rem;                        /* 15 px */
+  --fs-eyebrow: 0.8125rem;                   /* 13 px */
+  --fs-small: 0.9375rem;                     /* 15 px, captions / footnotes */
+
+  --lh-body: 1.65;
+  --lh-tight: 1.2;
+  --ls-eyebrow: 0.0875rem;                   /* 1.4 px */
+
+  /* --- Spacing (4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96) ----------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-24: 6rem;
+
+  /* --- Shape ---------------------------------------------------------------- */
+  --radius-button: 8px;
+  --radius-card: 10px;
+  --radius-chip: 999px;
+  --shadow-card: 0 1px 2px rgba(43, 42, 39, 0.04), 0 8px 24px -16px rgba(43, 42, 39, 0.18);
+
+  /* --- Layout --------------------------------------------------------------- */
+  --measure: 70ch;          /* reading column */
+  --container: 72rem;       /* 1152 px */
+  --container-wide: 84rem;  /* 1344 px, tables & tools */
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --header-h: 4.5rem;
+
+  /* --- Focus ring (keyboard) ---------------------------------------------- */
+  --focus-ring: 0 0 0 3px var(--paper), 0 0 0 6px var(--accent);
+
+  /* --- Motion --------------------------------------------------------------- */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+}

@@ -1,0 +1,17 @@
+---
+/** <Card href? eyebrow? title? as="h2|h3|h4"> — white card, 1px rule, 10px radius. */
+export interface Props { href?: string; eyebrow?: string; title?: string; as?: 'h2' | 'h3' | 'h4' | 'p'; external?: boolean; class?: string }
+const { href, eyebrow, title, as: Tag = 'h3', external, class: cls = '' } = Astro.props;
+const classes = ['card', href ? 'card--interactive' : '', cls].filter(Boolean).join(' ');
+---
+<div class={classes}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  {title && <Tag>{href ? <a class="card__link" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>{title}</a> : title}</Tag>}
+  <slot />
+</div>
+<style>
+  .card { position: relative; }
+  .card__link { color: inherit; text-decoration: none; }
+  .card__link::before { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .card--interactive:hover .card__link { color: var(--accent); }
+</style>

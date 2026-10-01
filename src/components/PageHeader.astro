@@ -1,0 +1,13 @@
+---
+/** <PageHeader eyebrow title lead> — exactly one <h1> per page lives here. */
+export interface Props { eyebrow?: string; title: string; lead?: string; wide?: boolean }
+const { eyebrow, title, lead, wide = false } = Astro.props;
+---
+<div class="page-header">
+  <div class={wide ? 'container--wide' : 'container'}>
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</div>

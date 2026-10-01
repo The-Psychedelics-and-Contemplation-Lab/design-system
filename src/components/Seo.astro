@@ -1,0 +1,50 @@
+---
+/**
+ * <Seo> — every page gets a hand-written title + description,
+ * Open Graph, Twitter card (summary_large_image), canonical,
+ * hreflang alternates and one schema.org JSON-LD block.
+ */
+export interface Alternate { lang: string; href: string }
+export interface Props {
+  title: string;              // full <title>, written by hand per page
+  description: string;        // meta + og:description, written by hand per page
+  canonical: string;          // absolute URL of this page
+  siteName: string;
+  lang?: string;              // "en" | "fr" …
+  ogImage?: string;           // absolute URL, 1200×630
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  alternates?: Alternate[];   // hreflang pairs for bilingual sites
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+const {
+  title, description, canonical, siteName, lang = 'en',
+  ogImage, ogImageAlt, ogType = 'website', alternates = [], schema, noindex = false,
+} = Astro.props;
+const locale = lang.startsWith('fr') ? 'fr_CA' : 'en_CA';
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content={locale} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:width" content="1200" />}
+{ogImage && <meta property="og:image:height" content="630" />}
+{ogImage && ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+{ogImage && ogImageAlt && <meta name="twitter:image:alt" content={ogImageAlt} />}
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}

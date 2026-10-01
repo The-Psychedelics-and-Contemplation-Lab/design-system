@@ -1,0 +1,111 @@
+---
+/**
+ * <Layout> — the page shell shared by the four sites.
+ * Imports tokens + fonts + base + print CSS, sets the per-site accent,
+ * writes all SEO tags, renders the institutional header and footer.
+ *
+ *   <Layout site={site} page={{ title, description, path }} nav={nav}>
+ *     <main id="main"> … </main>
+ *   </Layout>
+ */
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import '../styles/print.css';
+import Seo from './Seo.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { NavItem } from './Header.astro';
+import type { FooterLink } from './Footer.astro';
+import mcgillLogoAsset from '../assets/logos/mcgill.svg';
+import partnerLogoAsset from '../assets/logos/ldi-jgh.svg';
+
+export interface SiteConfig {
+  name: string;               // "The ReSPCT Guidelines"
+  tagline?: string;
+  url: string;                // "https://respctguidelines.com" (no trailing slash)
+  accent: string;             // "#3F6F6B"
+  lang: string;               // default language of this page
+  affiliation: string;
+  mcgillLogo?: string;        // defaults to the package's official McGill SVG
+  partnerLogo?: string | null; // defaults to the LDI–JGH SVG; null hides it
+  ogImage?: string;           // absolute URL
+  ogImageAlt?: string;
+  footerLinks?: FooterLink[];
+  menuLabel?: string;
+  skipLabel?: string;
+  organizationSchema?: Record<string, unknown>;
+}
+export interface PageMeta {
+  title: string;
+  description: string;
+  path: string;               // "/", "/guidelines/", "/fr/"
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  alternates?: { lang: string; href: string }[];
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+  bodyClass?: string;
+}
+export interface Props { site: SiteConfig; page: PageMeta; nav: NavItem[]; lang?: string }
+
+const { site, page, nav, lang = site.lang } = Astro.props;
+const canonical = site.url.replace(/\/$/, '') + page.path;
+const schema = page.schema ?? site.organizationSchema;
+const mcgillLogo = site.mcgillLogo ?? mcgillLogoAsset.src;
+const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ?? partnerLogoAsset.src);
+---
+<!doctype html>
+<html lang={lang} style={`--accent:${site.accent}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content={site.accent} />
+    <Seo
+      title={page.title}
+      description={page.description}
+      canonical={canonical}
+      siteName={site.name}
+      lang={lang}
+      ogImage={page.ogImage ?? site.ogImage}
+      ogImageAlt={page.ogImageAlt ?? site.ogImageAlt}
+      ogType={page.ogType}
+      alternates={page.alternates}
+      schema={schema}
+      noindex={page.noindex}
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <slot name="head" />
+  </head>
+  <body class={page.bodyClass}>
+    <a class="skip-link" href="#main">{site.skipLabel ?? (lang.startsWith('fr') ? 'Aller au contenu' : 'Skip to content')}</a>
+    <Header
+      siteName={site.name}
+      siteTagline={site.tagline}
+      nav={nav}
+      mcgillLogo={mcgillLogo}
+      partnerLogo={partnerLogo}
+      menuLabel={site.menuLabel ?? (lang.startsWith('fr') ? 'Menu' : 'Menu')}
+      lang={lang}
+      homeHref={lang === site.lang ? '/' : `/${lang}/`}
+    >
+      <slot name="nav-extra" slot="extra" />
+    </Header>
+    <slot />
+    <Footer
+      siteName={site.name}
+      affiliation={site.affiliation}
+      mcgillLogo={mcgillLogo}
+      partnerLogo={partnerLogo}
+      links={site.footerLinks}
+      lang={lang}
+    >
+      <slot name="footer-logos" slot="logos" />
+      <slot name="footer-meta" slot="meta" />
+    </Footer>
+  </body>
+</html>
