@@ -178,7 +178,11 @@ a.no-icon::after, .logo-lockup a::after, .site-nav a::after, .btn::after { conte
 }
 
 /* --- Tables --------------------------------------------------------------- */
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--card); }
+.table-wrap { border: 1px solid var(--rule); border-radius: var(--radius-card); background: var(--card); }
+/* On narrow screens the wrapper scrolls sideways (and becomes the sticky
+   container, so the header sticks to the wrapper's top). On wide screens it
+   does not scroll, so the header can stick below the site header. */
+@media (max-width: 59.99em) { .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; } thead th { top: 0 !important; } }
 table { width: 100%; border-collapse: separate; border-spacing: 0; font-family: var(--font-sans); font-size: var(--fs-ui); line-height: 1.5; }
 caption { text-align: left; font-family: var(--font-serif); font-size: var(--fs-h4); font-weight: 600; padding: var(--s-4) var(--s-4) var(--s-2); }
 th, td { padding: var(--s-3) var(--s-4); text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }

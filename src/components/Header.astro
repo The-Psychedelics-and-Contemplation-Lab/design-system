@@ -129,6 +129,12 @@ const {
     .site-nav__toggle { display: none; }
     .site-nav nav { display: block; }
     .logo-lockup__name { max-width: 22rem; }
+    .site-nav__list { flex-wrap: wrap; justify-content: flex-end; }
+  }
+  @media (min-width: 60em) and (max-width: 80em) {
+    /* Long wordmarks may wrap on two lines instead of colliding with the nav */
+    .logo-lockup__name { white-space: normal; max-width: 16rem; font-size: 1rem; }
+    .logo-lockup__tagline { display: none; }
   }
   @media (max-width: 40em) {
     .logo-lockup__mcgill img { height: 26px; }

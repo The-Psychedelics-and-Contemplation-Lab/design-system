@@ -53,6 +53,7 @@ export interface Props { site: SiteConfig; page: PageMeta; nav: NavItem[]; lang?
 const { site, page, nav, lang = site.lang } = Astro.props;
 const canonical = site.url.replace(/\/$/, '') + page.path;
 const schema = page.schema ?? site.organizationSchema;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const mcgillLogo = site.mcgillLogo ?? mcgillLogoAsset.src;
 const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ?? partnerLogoAsset.src);
 ---
@@ -76,8 +77,8 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
       schema={schema}
       noindex={page.noindex}
     />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
     <meta name="generator" content={Astro.generator} />
     <slot name="head" />
   </head>
@@ -91,7 +92,7 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
       partnerLogo={partnerLogo}
       menuLabel={site.menuLabel ?? (lang.startsWith('fr') ? 'Menu' : 'Menu')}
       lang={lang}
-      homeHref={lang === site.lang ? '/' : `/${lang}/`}
+      homeHref={lang === site.lang ? `${base}/` : `${base}/${lang}/`}
     >
       <slot name="nav-extra" slot="extra" />
     </Header>
