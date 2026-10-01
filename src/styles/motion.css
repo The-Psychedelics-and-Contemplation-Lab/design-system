@@ -85,7 +85,7 @@
 
 /* --- Media card: image with a quiet dark gradient and the title on top -------------- */
 .media-card {
-  position: relative; display: block; overflow: hidden;
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;
   border-radius: var(--radius-card);
   aspect-ratio: 4 / 3; background: var(--paper-deep);
   color: #fff; text-decoration: none;
@@ -96,7 +96,7 @@
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(to top, rgba(28, 27, 25, 0.82) 0%, rgba(28, 27, 25, 0.35) 45%, rgba(28, 27, 25, 0) 75%);
 }
-.media-card__body { position: absolute; inset: auto 0 0 0; z-index: 1; padding: var(--s-6); display: block; }
+.media-card__body { position: relative; z-index: 1; padding: var(--s-6); display: block; margin-top: 7rem; }
 .media-card__eyebrow, .media-card__title, .media-card__text { display: block; }
 .media-card__eyebrow { font-family: var(--font-sans); font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: var(--ls-eyebrow); text-transform: uppercase; opacity: 0.85; margin-bottom: var(--s-2); }
 .media-card__title { font-family: var(--font-serif); font-weight: 600; font-size: var(--fs-h3); line-height: 1.2; color: #fff; }

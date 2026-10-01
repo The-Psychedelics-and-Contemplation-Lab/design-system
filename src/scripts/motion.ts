@@ -11,6 +11,11 @@ function initReveal() {
     for (const en of entries) if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
   }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
   els.forEach((e) => io.observe(e));
+  // Safety net: anything in the first viewport becomes visible even if the
+  // observer never fires (background tab, print, old browsers).
+  const forceAboveFold = () => els.forEach((e) => { const r = e.getBoundingClientRect(); if (r.top < window.innerHeight * 1.2) e.classList.add('is-visible'); });
+  setTimeout(forceAboveFold, 2500);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) forceAboveFold(); });
 }
 
 function initParallax() {
