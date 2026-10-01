@@ -15,6 +15,7 @@ import '../styles/print.css';
 import Seo from './Seo.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+import Motion from './Motion.astro';
 import type { NavItem } from './Header.astro';
 import type { FooterLink } from './Footer.astro';
 import mcgillLogoAsset from '../assets/logos/mcgill.svg';
@@ -81,6 +82,7 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
     <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
     <meta name="generator" content={Astro.generator} />
     <slot name="head" />
+    <Motion />
   </head>
   <body class={page.bodyClass}>
     <a class="skip-link" href="#main">{site.skipLabel ?? (lang.startsWith('fr') ? 'Aller au contenu' : 'Skip to content')}</a>

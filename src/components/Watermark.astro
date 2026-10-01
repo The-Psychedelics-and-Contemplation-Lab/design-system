@@ -1,0 +1,17 @@
+---
+/**
+ * <Watermark motif="phyllotaxis|veins|lattice|waves|rings" position="right|left|center" speed={0.12} ink />
+ * A large faint line drawing behind a section. The parent needs class "has-watermark"
+ * (Section does it with `watermark` prop). Decorative: aria-hidden.
+ */
+import phyllotaxis from '../assets/motifs/phyllotaxis.svg?raw';
+import veins from '../assets/motifs/veins.svg?raw';
+import lattice from '../assets/motifs/lattice.svg?raw';
+import waves from '../assets/motifs/waves.svg?raw';
+import rings from '../assets/motifs/rings.svg?raw';
+export type Motif = 'phyllotaxis' | 'veins' | 'lattice' | 'waves' | 'rings';
+export interface Props { motif: Motif; position?: 'right' | 'left' | 'center'; speed?: number; ink?: boolean; size?: string; class?: string }
+const { motif, position = 'right', speed = 0.12, ink = false, size, class: cls = '' } = Astro.props;
+const svg = { phyllotaxis, veins, lattice, waves, rings }[motif];
+---
+<div class={`watermark watermark--${position} ${ink ? 'watermark--ink' : ''} ${cls}`} data-parallax={speed} style={size ? `--wm-size:${size}` : undefined} aria-hidden="true" set:html={svg} />

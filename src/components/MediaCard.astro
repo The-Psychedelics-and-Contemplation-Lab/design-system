@@ -1,0 +1,13 @@
+---
+/** <MediaCard href title eyebrow text src alt ratio="tall|wide" external /> — image card with a dark gradient and title. */
+export interface Props { href: string; title: string; eyebrow?: string; text?: string; src?: string; alt?: string; ratio?: 'tall' | 'wide'; external?: boolean; class?: string }
+const { href, title, eyebrow, text, src, alt = '', ratio, external, class: cls = '' } = Astro.props;
+---
+<a class={`media-card no-icon ${ratio ? `media-card--${ratio}` : ''} ${src ? '' : 'media-card--accent'} ${cls}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+  {src && <img src={src} alt={alt} loading="lazy" decoding="async" />}
+  <span class="media-card__body">
+    {eyebrow && <span class="media-card__eyebrow">{eyebrow}{external && ' ↗'}</span>}
+    <span class="media-card__title">{title}</span>
+    {text && <span class="media-card__text">{text}</span>}
+  </span>
+</a>

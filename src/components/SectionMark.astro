@@ -1,0 +1,6 @@
+---
+/** <SectionMark label="Mission" accent /> — thin vertical rule + small uppercase label, centred. */
+export interface Props { label: string; accent?: boolean }
+const { label, accent = false } = Astro.props;
+---
+<div class={`section-mark ${accent ? 'section-mark--accent' : ''}`}><p class="eyebrow">{label}</p></div>

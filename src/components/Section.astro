@@ -1,8 +1,10 @@
 ---
 /** <Section band? tight? wide? narrow? id?> — vertical rhythm wrapper. */
-export interface Props { id?: string; band?: boolean; tight?: boolean; wide?: boolean; narrow?: boolean; class?: string; ariaLabelledby?: string }
-const { id, band, tight, wide, narrow, class: cls = '', ariaLabelledby } = Astro.props;
-const outer = ['section', band ? 'section--band' : '', tight ? 'section--tight' : '', cls].filter(Boolean).join(' ');
+import Watermark from './Watermark.astro';
+import type { Motif } from './Watermark.astro';
+export interface Props { id?: string; band?: boolean; tight?: boolean; wide?: boolean; narrow?: boolean; class?: string; ariaLabelledby?: string; watermark?: Motif; watermarkPosition?: 'right' | 'left' | 'center'; watermarkInk?: boolean }
+const { id, band, tight, wide, narrow, class: cls = '', ariaLabelledby, watermark, watermarkPosition = 'right', watermarkInk = false } = Astro.props;
+const outer = ['section', band ? 'section--band' : '', tight ? 'section--tight' : '', watermark ? 'has-watermark' : '', cls].filter(Boolean).join(' ');
 const inner = wide ? 'container--wide' : narrow ? 'container--narrow' : 'container';
 ---
-<section id={id} class={outer} aria-labelledby={ariaLabelledby}><div class={inner}><slot /></div></section>
+<section id={id} class={outer} aria-labelledby={ariaLabelledby}>{watermark && <Watermark motif={watermark} position={watermarkPosition} ink={watermarkInk} />}<div class={inner}><slot /></div></section>

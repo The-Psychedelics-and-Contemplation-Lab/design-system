@@ -5,6 +5,9 @@ import Section from '../../src/components/Section.astro';
 import Button from '../../src/components/Button.astro';
 import Card from '../../src/components/Card.astro';
 import LangSwitch from '../../src/components/LangSwitch.astro';
+import Figure from '../../src/components/Figure.astro';
+import MediaCard from '../../src/components/MediaCard.astro';
+import SectionMark from '../../src/components/SectionMark.astro';
 import { ACCENTS, RESPCT_SECTIONS } from '../../src/index';
 
 const site = {
@@ -28,6 +31,7 @@ const nav = [
   { label: 'Typography', href: '#type' },
   { label: 'Components', href: '#components' },
   { label: 'Tables', href: '#tables' },
+  { label: 'Motion', href: '#motion' },
 ];
 const neutrals = [
   ['--ink', '#2B2A27', 'Ink — text'], ['--ink-muted', '#6B675F', 'Secondary text'],
@@ -97,6 +101,27 @@ const neutrals = [
         <Card eyebrow="Guideline" title="A plain card">Static content card. Spacing between children is 12 px.</Card>
         <Card title="Chips &amp; details"><p><span class="chip">Open access</span> <span class="chip">2025</span></p><details><summary>Expandable section</summary><p>Disclosure uses the native element — no JavaScript, keyboard accessible.</p></details></Card>
       </div>
+    </Section>
+
+    <Section id="motion" watermark="phyllotaxis" watermarkPosition="right">
+      <SectionMark label="Motion and imagery" accent />
+      <h2 class="reveal">Quiet motion, strong images</h2>
+      <p class="lead reveal" style="--reveal-delay:80ms">Reveals, a slow parallax drift and large line-drawn watermarks give the pages depth without noise. All of it respects <code>prefers-reduced-motion</code>.</p>
+      <div class="grid grid--3 reveal-group" style="margin-top: var(--s-8)">
+        <MediaCard href="#" eyebrow="Reporting standard" title="The ReSPCT Guidelines" text="30 items every psychedelic trial should report." src="/design-system/demo/illustration-800.webp" alt="Watercolour mushrooms" />
+        <MediaCard href="#" eyebrow="Framework" title="StaMPS Data Framework" text="409 items, four Delphi rounds." />
+        <MediaCard href="#" eyebrow="Ketamine therapy" title="The Montreal Model" text="Ketamine paired with psychotherapy." />
+      </div>
+      <div class="image-pair" style="margin-top: var(--s-12)">
+        <Figure src="/design-system/demo/illustration-1600.webp" alt="Watercolour illustration of mushrooms" ratio="tall" drift caption="Figure with inner drift (parallax) and caption." />
+        <Figure src="/design-system/demo/illustration-800.webp" alt="Detail of the illustration" ratio="square" fade caption="Square figure fading into the paper." />
+      </div>
+      <div class="grid grid--3" style="margin-top: var(--s-12)">
+        <div class="stat stat--accent reveal"><div class="stat__value">89</div><div class="stat__label">Delphi experts</div></div>
+        <div class="stat reveal" style="--reveal-delay:80ms"><div class="stat__value">30</div><div class="stat__label">Reporting items</div></div>
+        <div class="stat reveal" style="--reveal-delay:160ms"><div class="stat__value">4</div><div class="stat__label">Sections</div></div>
+      </div>
+      <blockquote class="pullquote reveal" style="margin-top: var(--s-12)">Ketamine can produce windows of opportunity for enhanced psychiatric care.<cite>Garel et al., Frontiers in Psychiatry, 2023</cite></blockquote>
     </Section>
 
     <Section id="tables" wide>
