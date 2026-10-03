@@ -6,7 +6,7 @@
  * same rule, then the site's own wordmark. On narrow screens the partner
  * logo hides (it stays in the footer) so the lockup never wraps.
  */
-export interface NavItem { label: string; href: string; current?: boolean; external?: boolean }
+export interface NavItem { label: string; href: string; current?: boolean; external?: boolean; children?: { label: string; href: string }[] }
 export interface Props {
   siteName: string;              // wordmark text, e.g. "The ReSPCT Guidelines"
   siteTagline?: string;          // small line under the wordmark (optional)
@@ -48,7 +48,19 @@ const {
       </summary>
       <nav aria-label={lang.startsWith('fr') ? 'Navigation principale' : 'Primary'}>
         <ul class="site-nav__list">
-          {nav.map((item) => (
+          {nav.map((item) => item.children ? (
+            <li class="site-nav__item has-children">
+              <span class="site-nav__link-group">
+                <a href={item.href} aria-current={item.current ? 'page' : undefined}>{item.label}</a>
+                <button type="button" class="site-nav__subtoggle" aria-expanded="false" aria-label={`Show ${item.label} submenu`}>
+                  <span class="site-nav__chevron" aria-hidden="true"></span>
+                </button>
+              </span>
+              <ul class="site-nav__submenu">
+                {item.children.map((child) => <li><a href={child.href}>{child.label}</a></li>)}
+              </ul>
+            </li>
+          ) : (
             <li>
               <a
                 href={item.href}
@@ -112,6 +124,26 @@ const {
   .site-nav__list a[aria-current="page"] { color: var(--accent); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); border-radius: var(--radius-button) var(--radius-button) 0 0; }
   .site-nav__extra:empty { display: none; }
 
+  /* Dropdown nav items (e.g. "Research" with Psychedelic/Contemplative sub-links): hover reveals it
+     on wide screens; the chevron button is a tap target to open/close it on touch and small screens. */
+  .site-nav__link-group { display: flex; align-items: center; }
+  .site-nav__subtoggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; padding: 0; margin: 0; border: 0; background: none; cursor: pointer; color: inherit;
+  }
+  .site-nav__chevron {
+    display: block; width: 7px; height: 7px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); transition: transform var(--dur) var(--ease);
+  }
+  .site-nav__item.has-children.is-open .site-nav__chevron { transform: rotate(225deg); }
+  .site-nav__submenu { list-style: none; margin: 0; padding: 0; display: none; }
+  .site-nav__item.has-children:hover .site-nav__submenu,
+  .site-nav__item.has-children:focus-within .site-nav__submenu,
+  .site-nav__item.has-children.is-open .site-nav__submenu {
+    display: block;
+  }
+
   @media (max-width: 59.99em) {
     .logo-lockup > .logo-lockup__partner { display: none; }
     .site-nav[open] .site-nav__toggle { border-color: var(--ink-muted); }
@@ -124,12 +156,31 @@ const {
     .site-nav__list { flex-direction: column; align-items: stretch; }
     .site-nav__list a { padding: 12px 14px; font-size: 1.0625rem; }
     .site-nav__list a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); border-radius: var(--radius-button); }
+    .site-nav__item.has-children .site-nav__link-group { justify-content: space-between; }
+    .site-nav__item.has-children .site-nav__subtoggle { width: 40px; height: 40px; }
+    .site-nav__item.has-children .site-nav__chevron { width: 8px; height: 8px; }
+    .site-nav__submenu { padding-left: var(--s-4); }
+    .site-nav__submenu a { padding: 10px 14px; font-size: 1rem; color: var(--ink-muted); }
   }
   @media (min-width: 60em) {
     .site-nav__toggle { display: none; }
     .site-nav nav { display: block; }
     .logo-lockup__name { max-width: 22rem; }
     .site-nav__list { flex-wrap: wrap; justify-content: flex-end; }
+    .site-nav__item.has-children { position: relative; }
+    .site-nav__item.has-children .site-nav__subtoggle { display: none; }
+    .site-nav__submenu {
+      position: absolute; top: 100%; left: 0; margin-top: var(--s-2); min-width: 14rem;
+      background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius-button);
+      box-shadow: var(--shadow-card); padding: var(--s-2);
+    }
+    .site-nav__submenu li + li { margin-top: 2px; }
+    .site-nav__submenu a {
+      display: block; padding: 8px 12px; border-radius: var(--radius-button);
+      font-family: var(--font-sans); font-size: var(--fs-ui); font-weight: 500;
+      color: var(--ink); text-decoration: none; white-space: nowrap;
+    }
+    .site-nav__submenu a:hover { background: var(--accent-soft); color: var(--accent); }
   }
   @media (min-width: 60em) and (max-width: 80em) {
     /* Long wordmarks may wrap on two lines instead of colliding with the nav */
@@ -153,4 +204,27 @@ const {
   mq.addEventListener('change', sync);
   // Close the mobile menu after choosing a same-page anchor
   nav?.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => { if (mq.matches && nav) nav.open = false; }));
+
+  // Dropdown nav items (e.g. "Research"): hover reveals the submenu on wide screens via CSS alone;
+  // the chevron button below makes it tap-to-open on touch screens and inside the mobile menu.
+  const closeDropdown = (item: Element) => {
+    item.classList.remove('is-open');
+    item.querySelector('.site-nav__subtoggle')?.setAttribute('aria-expanded', 'false');
+  };
+  document.querySelectorAll<HTMLLIElement>('.site-nav__item.has-children').forEach((item) => {
+    const toggle = item.querySelector<HTMLButtonElement>('.site-nav__subtoggle');
+    toggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opening = !item.classList.contains('is-open');
+      document.querySelectorAll('.site-nav__item.has-children.is-open').forEach((other) => { if (other !== item) closeDropdown(other); });
+      item.classList.toggle('is-open', opening);
+      toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.site-nav__item.has-children.is-open').forEach((item) => {
+      if (!(e.target instanceof Node) || !item.contains(e.target)) closeDropdown(item);
+    });
+  });
+  mq.addEventListener('change', () => document.querySelectorAll('.site-nav__item.has-children.is-open').forEach(closeDropdown));
 </script>
