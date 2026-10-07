@@ -26,8 +26,11 @@ const {
   menuLabel = 'Menu', lang = 'en', siteLogo, siteLogoAlt = '',
 } = Astro.props;
 const hasAside = Astro.slots.has('aside');
+// A header carrying both a site mark and an aside (language switch) is "crowded": on medium
+// screens its navigation moves to a second, centred row instead of wrapping unevenly.
+const crowded = hasAside && !!siteLogo;
 ---
-<header class="site-header">
+<header class:list={['site-header', { 'site-header--crowded': crowded }]}>
   <div class="container site-header__inner">
     <div class="logo-lockup">
       <a class="logo-lockup__mcgill no-icon" href="https://www.mcgill.ca/" target="_blank" rel="noopener noreferrer" aria-label="McGill University (opens in a new tab)">
@@ -107,7 +110,8 @@ const hasAside = Astro.slots.has('aside');
   .logo-lockup__mark { height: 40px; width: auto; flex: none; }
   /* Optional right-hand slot (e.g. a language switch) outside the navigation list */
   .site-header__aside { display: flex; align-items: center; flex: none; }
-  .site-header__inner:has(.site-header__aside) .site-nav { margin-left: auto; }
+  /* With an aside the navigation sits centred between the lockup and the aside */
+  .site-header__inner:has(.site-header__aside) .site-nav { margin-inline: auto; }
   .logo-lockup__name {
     font-family: var(--font-serif); font-weight: 600; font-size: 1.125rem; line-height: 1.15;
     color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw;
@@ -199,6 +203,17 @@ const hasAside = Astro.slots.has('aside');
     /* Long wordmarks may wrap on two lines instead of colliding with the nav */
     .logo-lockup__name { white-space: normal; max-width: 16rem; font-size: 1rem; }
     .logo-lockup__tagline { display: none; }
+    /* …but next to a site mark the wordmark stays on one line (the text column must not be squeezed) */
+    .logo-lockup__brand--with-logo .logo-lockup__text { flex: none; }
+    .logo-lockup__brand--with-logo .logo-lockup__name { white-space: nowrap; }
+  }
+  @media (min-width: 60em) and (max-width: 75em) {
+    /* Crowded header (mark + language switch): the nav takes a full, centred second row */
+    .site-header--crowded .site-header__inner { flex-wrap: wrap; row-gap: 0; }
+    .site-header--crowded .site-nav { order: 3; flex: 1 0 100%; margin-inline: 0; border-top: 1px solid var(--rule); }
+    .site-header--crowded .site-nav__list { justify-content: center; flex-wrap: nowrap; }
+    .site-header--crowded .site-nav__list a { padding-block: 6px; }
+    .site-header--crowded .logo-lockup__partner img { height: 40px; }
   }
   @media (max-width: 40em) {
     .logo-lockup__mcgill img { height: 26px; }
