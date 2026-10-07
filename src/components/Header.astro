@@ -19,18 +19,20 @@ export interface Props {
   lang?: string;
   siteLogo?: string;             // optional mark rendered inside the brand link, before the wordmark
   siteLogoAlt?: string;
+  wide?: boolean;                // header spans the viewport (minus the gutter) instead of the content container
 }
 const {
   siteName, siteTagline, homeHref = '/', nav, mcgillLogo, partnerLogo,
   partnerAlt = 'Lady Davis Institute for Medical Research — Jewish General Hospital',
-  menuLabel = 'Menu', lang = 'en', siteLogo, siteLogoAlt = '',
+  menuLabel = 'Menu', lang = 'en', siteLogo, siteLogoAlt = '', wide = false,
 } = Astro.props;
 const hasAside = Astro.slots.has('aside');
-// A header carrying both a site mark and an aside (language switch) is "crowded": on medium
-// screens its navigation moves to a second, centred row instead of wrapping unevenly.
+// A header carrying both a site mark and an aside (language switch) is "crowded": its navigation
+// never wraps — it collapses into the menu button below 75em (instead of 60em) and everything is
+// slightly more compact up to 90em so the row always fits on one line.
 const crowded = hasAside && !!siteLogo;
 ---
-<header class:list={['site-header', { 'site-header--crowded': crowded }]}>
+<header class:list={['site-header', { 'site-header--crowded': crowded, 'site-header--wide': wide }]} data-collapse={crowded ? '74.99em' : '59.99em'}>
   <div class="container site-header__inner">
     <div class="logo-lockup">
       <a class="logo-lockup__mcgill no-icon" href="https://www.mcgill.ca/" target="_blank" rel="noopener noreferrer" aria-label="McGill University (opens in a new tab)">
@@ -108,6 +110,11 @@ const crowded = hasAside && !!siteLogo;
   .logo-lockup__brand--with-logo { flex-direction: row; align-items: center !important; gap: var(--s-3); }
   .logo-lockup__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .logo-lockup__mark { height: 40px; width: auto; flex: none; }
+  .logo-lockup__brand--with-logo .logo-lockup__text { flex: none; }
+  .logo-lockup__brand--with-logo .logo-lockup__name { white-space: nowrap; overflow: visible; max-width: none; }
+  /* Wide header: the row spans the viewport minus the gutter, so the lockup starts further left
+     and the aside (language switch) sits further right than the page's reading column */
+  .site-header--wide .site-header__inner { width: calc(100% - 2 * var(--gutter)); max-width: none; }
   /* Optional right-hand slot (e.g. a language switch) outside the navigation list */
   .site-header__aside { display: flex; align-items: center; flex: none; }
   /* With an aside the navigation sits centred between the lockup and the aside */
@@ -183,7 +190,7 @@ const crowded = hasAside && !!siteLogo;
     .site-nav__toggle { display: none; }
     .site-nav nav { display: block; }
     .logo-lockup__name { max-width: 22rem; }
-    .site-nav__list { flex-wrap: wrap; justify-content: flex-end; }
+    .site-nav__list { flex-wrap: nowrap; justify-content: flex-end; }
     .site-nav__item.has-children { position: relative; }
     .site-nav__item.has-children .site-nav__subtoggle { display: none; }
     .site-nav__submenu {
@@ -211,13 +218,16 @@ const crowded = hasAside && !!siteLogo;
     .logo-lockup__partner img { height: 42px; }
     .site-nav__list a { padding-inline: 10px; }
   }
-  @media (min-width: 60em) and (max-width: 75em) {
-    /* Crowded header (mark + language switch): the nav takes a full, centred second row */
-    .site-header--crowded .site-header__inner { flex-wrap: wrap; row-gap: 0; }
-    .site-header--crowded .site-nav { order: 3; flex: 1 0 100%; margin-inline: 0; border-top: 1px solid var(--rule); }
-    .site-header--crowded .site-nav__list { justify-content: center; flex-wrap: nowrap; }
-    .site-header--crowded .site-nav__list a { padding-block: 6px; }
+  @media (min-width: 75em) and (max-width: 90em) {
+    /* Crowded header: compact lockup, nav and language switch so seven items fit on one row */
+    .site-header--crowded .logo-lockup__mcgill img { height: 28px; }
     .site-header--crowded .logo-lockup__partner img { height: 40px; }
+    .site-header--crowded .logo-lockup__mark { height: 34px; }
+    .site-header--crowded .logo-lockup__name { font-size: 1.0625rem; }
+    .site-header--crowded .logo-lockup__tagline { display: none; }
+    .site-header--crowded .site-nav__list a { padding: 8px 8px; font-size: 0.875rem; }
+    .site-header--crowded :global(.lang-switch__long) { display: none; }
+    .site-header--crowded :global(.lang-switch__short) { display: inline; }
   }
   @media (max-width: 40em) {
     .logo-lockup__mcgill img { height: 26px; }
@@ -225,13 +235,35 @@ const crowded = hasAside && !!siteLogo;
     .logo-lockup__name { font-size: 1rem; max-width: 46vw; }
     .logo-lockup__tagline { display: none; }
   }
+  @media (min-width: 60em) and (max-width: 74.99em) {
+    /* Crowded headers collapse into the menu button up to 75em (same rules as the small-screen block) */
+    .site-header--crowded .site-nav__toggle { display: inline-flex; }
+    .site-header--crowded .site-nav__item.has-children .site-nav__submenu { position: static; box-shadow: none; border: 0; min-width: 0; }
+    .site-header--crowded .logo-lockup > .logo-lockup__partner { display: none; }
+    .site-header--crowded .site-nav[open] .site-nav__toggle { border-color: var(--ink-muted); }
+    .site-header--crowded .site-nav nav {
+      position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--card); border-bottom: 1px solid var(--rule);
+      box-shadow: var(--shadow-card);
+      padding: var(--s-3) var(--gutter) var(--s-4);
+    }
+    .site-header--crowded .site-nav__list { flex-direction: column; align-items: stretch; }
+    .site-header--crowded .site-nav__list a { padding: 12px 14px; font-size: 1.0625rem; }
+    .site-header--crowded .site-nav__list a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); border-radius: var(--radius-button); }
+    .site-header--crowded .site-nav__item.has-children .site-nav__link-group { justify-content: space-between; }
+    .site-header--crowded .site-nav__item.has-children .site-nav__subtoggle { width: 40px; height: 40px; }
+    .site-header--crowded .site-nav__item.has-children .site-nav__chevron { width: 8px; height: 8px; }
+    .site-header--crowded .site-nav__submenu { padding-left: var(--s-4); }
+    .site-header--crowded .site-nav__submenu a { padding: 10px 14px; font-size: 1rem; color: var(--ink-muted); }
+  }
 </style>
 
 <script>
   // Progressive enhancement: the menu is open by default (works without JS);
   // on narrow screens we collapse it and let <summary> toggle it.
   const nav = document.getElementById('site-nav') as HTMLDetailsElement | null;
-  const mq = window.matchMedia('(max-width: 59.99em)');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const mq = window.matchMedia(`(max-width: ${header?.dataset.collapse ?? '59.99em'})`);
   const sync = () => { if (nav) nav.open = !mq.matches; };
   sync();
   mq.addEventListener('change', sync);

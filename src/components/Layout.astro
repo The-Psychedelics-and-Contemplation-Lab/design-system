@@ -32,6 +32,7 @@ export interface SiteConfig {
   partnerLogo?: string | null; // defaults to the LDI–JGH SVG; null hides it
   siteLogo?: string;          // optional mark shown next to the wordmark in the header (links home)
   siteLogoAlt?: string;
+  headerLayout?: 'contained' | 'wide'; // 'wide': the header row spans the viewport minus the gutter
   ogImage?: string;           // absolute URL
   ogImageAlt?: string;
   footerLinks?: FooterLink[];
@@ -98,6 +99,7 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
       lang={lang}
       homeHref={lang === site.lang ? `${base}/` : `${base}/${lang}/`}
       siteLogo={site.siteLogo}
+      wide={site.headerLayout === 'wide'}
       siteLogoAlt={site.siteLogoAlt}
     >
       <slot name="nav-extra" slot="extra" />

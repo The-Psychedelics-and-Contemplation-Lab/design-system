@@ -5,7 +5,7 @@ const { current, links } = Astro.props;
 ---
 <ul class="lang-switch" aria-label="Language">
   {links.map((l) => (
-    <li><a href={l.href} lang={l.lang} hreflang={l.lang} aria-current={l.lang === current ? 'true' : undefined}>{l.label}</a></li>
+    <li><a href={l.href} lang={l.lang} hreflang={l.lang} aria-current={l.lang === current ? 'true' : undefined} aria-label={l.label}><span class="lang-switch__long">{l.label}</span><span class="lang-switch__short" aria-hidden="true">{l.lang.slice(0, 2).toUpperCase()}</span></a></li>
   ))}
 </ul>
 <style>
@@ -14,4 +14,5 @@ const { current, links } = Astro.props;
   .lang-switch a[aria-current="true"] { background: var(--accent); color: var(--accent-ink); }
   .lang-switch a:not([aria-current]):hover { color: var(--accent); background: var(--accent-soft); }
   .lang-switch li + li { border-left: 1px solid var(--rule); }
+  .lang-switch__short { display: none; }  /* shown instead of the long label where the header is tight (see Header.astro) */
 </style>
