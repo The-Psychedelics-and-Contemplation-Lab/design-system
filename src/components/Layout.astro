@@ -39,6 +39,7 @@ export interface SiteConfig {
   menuLabel?: string;
   skipLabel?: string;
   organizationSchema?: Record<string, unknown>;
+  analyticsToken?: string;    // Cloudflare Web Analytics beacon token (cookieless page-view counts); omitted = no beacon
 }
 export interface PageMeta {
   title: string;
@@ -117,5 +118,8 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
       <slot name="footer-logos" slot="logos" />
       <slot name="footer-meta" slot="meta" />
     </Footer>
+    {site.analyticsToken && (
+      <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: site.analyticsToken })}></script>
+    )}
   </body>
 </html>
