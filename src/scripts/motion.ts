@@ -44,30 +44,43 @@ function initParallax() {
   const els = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
   if (!els.length || !mq.matches) return;
   const wide = window.matchMedia('(min-width: 60em)');
-  const tops = new Map<HTMLElement, number>();
-  const measure = () => els.forEach((el) => { const t = el.style.transform; el.style.transform = ''; tops.set(el, el.getBoundingClientRect().top + window.scrollY); el.style.transform = t; });
-  measure();
+  // Natural (untransformed) page position and height of every element, measured on load and
+  // resize only. The scroll handler then never reads layout: it works from scrollY and these
+  // numbers, and only writes transforms, so each frame is a compositor-only update.
+  const geo = new Map<HTMLElement, { top: number; height: number }>();
+  const measure = () => {
+    els.forEach((el) => { el.style.transform = ''; });
+    els.forEach((el) => { const r = el.getBoundingClientRect(); geo.set(el, { top: r.top + window.scrollY, height: r.height }); });
+  };
   let ticking = false;
+  let lastY = -1;
   const update = () => {
     ticking = false;
     if (!wide.matches) { els.forEach((e) => (e.style.transform = '')); return; }
+    const y = window.scrollY;
+    if (y === lastY) return;
+    lastY = y;
     const vh = window.innerHeight;
     for (const el of els) {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > vh + 200) continue;
+      const g = geo.get(el); if (!g) continue;
+      const top = g.top - y;                                   // natural position in the viewport
+      if (top + g.height < -300 || top > vh + 300) continue;
       const speed = parseFloat(el.dataset.parallax || '0.15');
       const max = parseFloat(el.dataset.parallaxMax || '120');   // px clamp, per element
-      // origin "top": measure from the element's natural top (for things that start in view)
-      // "top": distance scrolled since the element's natural top reached the viewport top (0 at page top)
-      const ref = el.dataset.parallaxOrigin === 'top' ? Math.min(0, (tops.get(el) ?? 0) - window.scrollY) : (r.top + r.height / 2 - vh / 2);
-      const y = Math.max(-max, Math.min(max, -ref * speed));
-      el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+      // origin "top": distance scrolled since the element's natural top reached the viewport top (0 at page top)
+      // otherwise: the element's natural centre relative to the viewport centre
+      const ref = el.dataset.parallaxOrigin === 'top' ? Math.min(0, top) : (top + g.height / 2 - vh / 2);
+      const t = Math.max(-max, Math.min(max, -ref * speed));
+      el.style.transform = `translate3d(0, ${t.toFixed(2)}px, 0)`;
     }
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  const remeasure = () => { measure(); lastY = -1; onScroll(); };
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { measure(); onScroll(); });
-  window.addEventListener('load', () => { measure(); onScroll(); });
+  window.addEventListener('resize', remeasure);
+  window.addEventListener('load', remeasure);
+  document.fonts?.ready.then(remeasure);
+  measure();
   update();
 }
 
