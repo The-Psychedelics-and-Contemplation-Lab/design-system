@@ -17,12 +17,15 @@ export interface Props {
   partnerAlt?: string;
   menuLabel?: string;            // "Menu" / "Menu"
   lang?: string;
+  siteLogo?: string;             // optional mark rendered inside the brand link, before the wordmark
+  siteLogoAlt?: string;
 }
 const {
   siteName, siteTagline, homeHref = '/', nav, mcgillLogo, partnerLogo,
   partnerAlt = 'Lady Davis Institute for Medical Research — Jewish General Hospital',
-  menuLabel = 'Menu', lang = 'en',
+  menuLabel = 'Menu', lang = 'en', siteLogo, siteLogoAlt = '',
 } = Astro.props;
+const hasAside = Astro.slots.has('aside');
 ---
 <header class="site-header">
   <div class="container site-header__inner">
@@ -35,9 +38,12 @@ const {
           <img src={partnerLogo} alt={partnerAlt} width="146" height="82" decoding="async" />
         </a>
       )}
-      <a class="logo-lockup__brand no-icon" href={homeHref} aria-current={nav.some(n => n.href === homeHref && n.current) ? 'page' : undefined}>
-        <span class="logo-lockup__name">{siteName}</span>
-        {siteTagline && <span class="logo-lockup__tagline">{siteTagline}</span>}
+      <a class:list={['logo-lockup__brand', 'no-icon', { 'logo-lockup__brand--with-logo': !!siteLogo }]} href={homeHref} aria-current={nav.some(n => n.href === homeHref && n.current) ? 'page' : undefined}>
+        {siteLogo && <img class="logo-lockup__mark" src={siteLogo} alt={siteLogoAlt} width="72" height="40" decoding="async" />}
+        <span class="logo-lockup__text">
+          <span class="logo-lockup__name">{siteName}</span>
+          {siteTagline && <span class="logo-lockup__tagline">{siteTagline}</span>}
+        </span>
       </a>
     </div>
 
@@ -74,6 +80,7 @@ const {
         </ul>
       </nav>
     </details>
+    {hasAside && <div class="site-header__aside"><slot name="aside" /></div>}
   </div>
 </header>
 
@@ -95,6 +102,12 @@ const {
   .logo-lockup__mcgill img { height: 32px; width: auto; }
   .logo-lockup__partner img { height: 48px; width: auto; }
   .logo-lockup__brand { flex-direction: column; align-items: flex-start !important; gap: 2px; min-width: 0; }
+  .logo-lockup__brand--with-logo { flex-direction: row; align-items: center !important; gap: var(--s-3); }
+  .logo-lockup__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .logo-lockup__mark { height: 40px; width: auto; flex: none; }
+  /* Optional right-hand slot (e.g. a language switch) outside the navigation list */
+  .site-header__aside { display: flex; align-items: center; flex: none; }
+  .site-header__inner:has(.site-header__aside) .site-nav { margin-left: auto; }
   .logo-lockup__name {
     font-family: var(--font-serif); font-weight: 600; font-size: 1.125rem; line-height: 1.15;
     color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw;
@@ -189,6 +202,7 @@ const {
   }
   @media (max-width: 40em) {
     .logo-lockup__mcgill img { height: 26px; }
+    .logo-lockup__mark { height: 30px; }
     .logo-lockup__name { font-size: 1rem; max-width: 46vw; }
     .logo-lockup__tagline { display: none; }
   }

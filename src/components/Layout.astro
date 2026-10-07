@@ -30,6 +30,8 @@ export interface SiteConfig {
   affiliation: string;
   mcgillLogo?: string;        // defaults to the package's official McGill SVG
   partnerLogo?: string | null; // defaults to the LDI–JGH SVG; null hides it
+  siteLogo?: string;          // optional mark shown next to the wordmark in the header (links home)
+  siteLogoAlt?: string;
   ogImage?: string;           // absolute URL
   ogImageAlt?: string;
   footerLinks?: FooterLink[];
@@ -95,8 +97,11 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
       menuLabel={site.menuLabel ?? (lang.startsWith('fr') ? 'Menu' : 'Menu')}
       lang={lang}
       homeHref={lang === site.lang ? `${base}/` : `${base}/${lang}/`}
+      siteLogo={site.siteLogo}
+      siteLogoAlt={site.siteLogoAlt}
     >
       <slot name="nav-extra" slot="extra" />
+      <slot name="header-aside" slot="aside" />
     </Header>
     <slot />
     <Footer
