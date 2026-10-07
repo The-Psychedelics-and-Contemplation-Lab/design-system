@@ -206,6 +206,10 @@ const crowded = hasAside && !!siteLogo;
     /* …but next to a site mark the wordmark stays on one line (the text column must not be squeezed) */
     .logo-lockup__brand--with-logo .logo-lockup__text { flex: none; }
     .logo-lockup__brand--with-logo .logo-lockup__name { white-space: nowrap; }
+    /* Slightly tighter lockup and nav so four to six items fit on one row at ~1100 px */
+    .logo-lockup__mcgill img { height: 28px; }
+    .logo-lockup__partner img { height: 42px; }
+    .site-nav__list a { padding-inline: 10px; }
   }
   @media (min-width: 60em) and (max-width: 75em) {
     /* Crowded header (mark + language switch): the nav takes a full, centred second row */
