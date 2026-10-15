@@ -10,8 +10,8 @@ import lattice from '../assets/motifs/lattice.svg?raw';
 import waves from '../assets/motifs/waves.svg?raw';
 import rings from '../assets/motifs/rings.svg?raw';
 export type Motif = 'phyllotaxis' | 'veins' | 'lattice' | 'waves' | 'rings';
-export interface Props { motif: Motif; position?: 'right' | 'left' | 'center'; speed?: number; ink?: boolean; size?: string; class?: string }
-const { motif, position = 'right', speed = 0.12, ink = false, size, class: cls = '' } = Astro.props;
+export interface Props { motif: Motif; position?: 'right' | 'left' | 'center'; speed?: number; ink?: boolean; size?: string; class?: string; bloom?: boolean | number }
+const { motif, position = 'right', speed = 0.12, ink = false, size, class: cls = '', bloom } = Astro.props;
 const svg = { phyllotaxis, veins, lattice, waves, rings }[motif];
 ---
-<div class={`watermark watermark--${position} ${ink ? 'watermark--ink' : ''} ${cls}`} data-parallax={speed} style={size ? `--wm-size:${size}` : undefined} aria-hidden="true" set:html={svg} />
+<div class={`watermark watermark--${position} ${ink ? 'watermark--ink' : ''} ${cls}`} data-parallax={speed} data-bloom={bloom === undefined || bloom === false ? undefined : (bloom === true ? '28' : String(bloom))} style={size ? `--wm-size:${size}` : undefined} aria-hidden="true" set:html={svg} />
