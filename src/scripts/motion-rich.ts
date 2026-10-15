@@ -67,28 +67,30 @@ function watermarkBlooms() {
 }
 
 function tilts() {
-  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
-    if (card.dataset.tiltReady || !fine.matches) return; card.dataset.tiltReady = '1';
-    const max = parseFloat(card.dataset.tilt || '5');
-    // Set up on the first hover only: the card may still be playing its CSS entrance (translateY) when the
-    // page loads, and an inline transform written then would freeze it mid-way.
+  // The wrapper ([data-tilt]) stays still and listens; its first child is what rotates. Rotating the
+  // hovered element itself would move its own hit area under the cursor and make the hover flicker.
+  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((wrap) => {
+    if (wrap.dataset.tiltReady || !fine.matches) return; wrap.dataset.tiltReady = '1';
+    const card = (wrap.firstElementChild as HTMLElement | null) || wrap;
+    const max = parseFloat(wrap.dataset.tilt || '4');
     let rx: ReturnType<typeof gsap.quickTo> | undefined, ry: ReturnType<typeof gsap.quickTo> | undefined;
     const arm = () => {
       if (rx) return;
-      gsap.set(card, { transformPerspective: 900, transformOrigin: '50% 50%', x: 0, y: 0, rotationX: 0, rotationY: 0 });
-      rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power2.out' });
-      ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power2.out' });
+      wrap.classList.add('is-armed');
+      gsap.set(card, { transformPerspective: 1000, transformOrigin: '50% 50%', rotationX: 0, rotationY: 0 });
+      rx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power2.out' });
+      ry = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power2.out' });
     };
-    card.addEventListener('mouseenter', arm);
-    card.addEventListener('mousemove', (e) => {
+    wrap.addEventListener('mouseenter', arm);
+    wrap.addEventListener('mousemove', (e) => {
       arm(); if (!rx || !ry) return;
-      const r = card.getBoundingClientRect();
+      const r = wrap.getBoundingClientRect();
       const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
       rx((0.5 - ny) * max * 2); ry((nx - 0.5) * max * 2);
-      card.style.setProperty('--mx', `${(nx * 100).toFixed(1)}%`); card.style.setProperty('--my', `${(ny * 100).toFixed(1)}%`);
-      card.classList.add('is-lit');
+      wrap.style.setProperty('--mx', `${(nx * 100).toFixed(1)}%`); wrap.style.setProperty('--my', `${(ny * 100).toFixed(1)}%`);
+      wrap.classList.add('is-lit');
     }, { passive: true });
-    card.addEventListener('mouseleave', () => { rx?.(0); ry?.(0); card.classList.remove('is-lit'); });
+    wrap.addEventListener('mouseleave', () => { rx?.(0); ry?.(0); wrap.classList.remove('is-lit'); });
   });
 }
 

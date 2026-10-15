@@ -208,7 +208,9 @@ html.js .reveal-chars { visibility: hidden; }          /* shown by the script (o
 @media (prefers-reduced-motion: reduce) { html.js .reveal-chars { visibility: visible; } }
 .reveal-chars .wd { display: inline-block; white-space: nowrap; }
 .reveal-chars .ch { display: inline-block; will-change: transform, filter, opacity; }
-[data-tilt] { transform-style: preserve-3d; will-change: transform; }
+[data-tilt] { position: relative; }
+[data-tilt] > * { will-change: transform; }
+[data-tilt].is-armed > * { transition-property: opacity, box-shadow; }   /* the entrance transition must not fight the tilt */
 [data-tilt]::before {                                   /* soft spotlight following the cursor */
   content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit;
   background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.22), transparent 60%);
