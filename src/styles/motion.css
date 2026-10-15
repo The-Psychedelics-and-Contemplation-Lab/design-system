@@ -202,3 +202,16 @@ a.media-card.no-icon::after { content: "" !important; }
 .text-center { text-align: center; }
 .text-center .lead, .text-center p { margin-inline: auto; }
 .prose--centered { margin-inline: auto; }
+
+/* --- Rich motion (GSAP layer, opt-in: see scripts/motion-rich.ts) ----------------------------- */
+html.js .reveal-chars { visibility: hidden; }          /* shown by the script (or at once with reduced motion) */
+@media (prefers-reduced-motion: reduce) { html.js .reveal-chars { visibility: visible; } }
+.reveal-chars .wd { display: inline-block; white-space: nowrap; }
+.reveal-chars .ch { display: inline-block; will-change: transform, filter, opacity; }
+[data-tilt] { transform-style: preserve-3d; will-change: transform; }
+[data-tilt]::before {                                   /* soft spotlight following the cursor */
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.22), transparent 60%);
+  opacity: 0; transition: opacity 400ms var(--ease);
+}
+[data-tilt].is-lit::before { opacity: 1; }

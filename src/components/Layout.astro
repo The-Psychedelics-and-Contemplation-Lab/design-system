@@ -16,6 +16,7 @@ import Seo from './Seo.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Motion from './Motion.astro';
+import { ClientRouter } from 'astro:transitions';
 import type { NavItem } from './Header.astro';
 import type { FooterLink } from './Footer.astro';
 import mcgillLogoAsset from '../assets/logos/mcgill.svg';
@@ -39,7 +40,9 @@ export interface SiteConfig {
   menuLabel?: string;
   skipLabel?: string;
   organizationSchema?: Record<string, unknown>;
-  analyticsToken?: string;    // Cloudflare Web Analytics beacon token (cookieless page-view counts); omitted = no beacon
+  analyticsToken?: string;
+  motion?: 'rich';            // 'rich': GSAP layer (cursor parallax, character reveals, watermark bloom, card tilt)
+  viewTransitions?: boolean;  // Astro <ClientRouter>: pages cross-fade instead of reloading    // Cloudflare Web Analytics beacon token (cookieless page-view counts); omitted = no beacon
 }
 export interface PageMeta {
   title: string;
@@ -86,7 +89,8 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
     <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
     <meta name="generator" content={Astro.generator} />
     <slot name="head" />
-    <Motion />
+    <Motion rich={site.motion === 'rich'} />
+    {site.viewTransitions && <ClientRouter />}
   </head>
   <body class={page.bodyClass}>
     <a class="skip-link" href="#main">{site.skipLabel ?? (lang.startsWith('fr') ? 'Aller au contenu' : 'Skip to content')}</a>

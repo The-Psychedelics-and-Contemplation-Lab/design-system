@@ -40,9 +40,13 @@ function initReveal() {
   document.addEventListener('visibilitychange', () => { if (!document.hidden) forceAboveFold(); });
 }
 
+let els: HTMLElement[] = [];
+let parallaxReady = false;
 function initParallax() {
-  const els = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
-  if (!els.length || !mq.matches) return;
+  els = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
+  if (!mq.matches) return;
+  if (parallaxReady) { (window as any).__pclRemeasure?.(); return; }   // after a view transition: new elements, same listeners
+  parallaxReady = true;
   const wide = window.matchMedia('(min-width: 60em)');
   // Natural (untransformed) page position and height of every element, measured on load and
   // resize only. The scroll handler then never reads layout: it works from scrollY and these
@@ -76,6 +80,7 @@ function initParallax() {
   };
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   const remeasure = () => { measure(); lastY = -1; onScroll(); };
+  (window as any).__pclRemeasure = remeasure;
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', remeasure);
   window.addEventListener('load', remeasure);
@@ -84,5 +89,8 @@ function initParallax() {
   update();
 }
 
-initReveal();
-initParallax();
+function init() { initReveal(); initParallax(); }
+init();
+// With Astro's <ClientRouter> (view transitions) the page body is swapped without a reload:
+// run again for the new content (every init is idempotent).
+document.addEventListener('astro:after-swap', init);

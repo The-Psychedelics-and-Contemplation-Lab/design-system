@@ -1,7 +1,14 @@
 ---
-/** Loads the shared motion script (reveal + parallax). Included once by <Layout>. */
+/** Loads the shared motion script (reveal + parallax). Included once by <Layout>.
+ *  `rich` adds the GSAP layer (motion-rich.ts): cursor parallax, character reveals, watermark bloom,
+ *  card tilt. Opt-in per site (site.motion = 'rich'). */
+export interface Props { rich?: boolean }
+const { rich = false } = Astro.props;
 import '../styles/motion.css';
 ---
 <script>
   import '../scripts/motion.ts';
 </script>
+{rich && <script>
+  import '../scripts/motion-rich.ts';
+</script>}

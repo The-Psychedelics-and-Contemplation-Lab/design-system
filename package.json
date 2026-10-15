@@ -1,6 +1,6 @@
 {
   "name": "@pcl/design-system",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Shared design system for the Psychedelics & Contemplation Lab websites",
   "main": "index.js",
   "scripts": {
@@ -32,5 +32,8 @@
   ],
   "devDependencies": {
     "astro": "^7.3.5"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0"
   }
 }
