@@ -94,6 +94,8 @@ const partnerLogo = site.partnerLogo === null ? undefined : (site.partnerLogo ??
   </head>
   <body class={page.bodyClass}>
     <a class="skip-link" href="#main">{site.skipLabel ?? (lang.startsWith('fr') ? 'Aller au contenu' : 'Skip to content')}</a>
+    {/* Optional strip above the header (e.g. a row of partner logos); it scrolls away, the header stays sticky */}
+    <slot name="header-top" />
     <Header
       siteName={site.name}
       siteTagline={site.tagline}
